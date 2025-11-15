@@ -1,0 +1,23 @@
+services:
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: delivery-oracle
+    environment:
+      ORACLE_PASSWORD: oracle
+      ORACLE_USERNAME: system
+    ports:
+      - "1521:1521"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1521"]
+      interval: 10s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: delivery-rabbit
+    ports:
+      - "5672:5672"   # porta do broker
+      - "15672:15672" # porta da interface web
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
