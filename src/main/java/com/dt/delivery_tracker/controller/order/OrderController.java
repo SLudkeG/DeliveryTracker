@@ -2,10 +2,12 @@ package com.dt.delivery_tracker.controller.order;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.dt.delivery_tracker.domain.order.Order;
 import com.dt.delivery_tracker.domain.order.OrderService;
+import com.dt.delivery_tracker.domain.repository.OrderEventResponse;
 
 import jakarta.validation.Valid;
 
@@ -39,6 +41,17 @@ public class OrderController {
         return toResponse(service.findById(id));
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
+
+    @GetMapping("/{id}/events")
+    public List<OrderEventResponse> events(@PathVariable Long id) {
+        return service.getOrderEvents(id);
+    }
+
     @GetMapping
     public List<OrderResponse> list() {
         return service.list()
@@ -53,7 +66,6 @@ public class OrderController {
                 order.getCustomerName(),
                 order.getStatus(),
                 order.getCreatedAt(),
-                order.getUpdatedAt()
-        );
+                order.getUpdatedAt());
     }
 }

@@ -1,6 +1,7 @@
 package com.dt.delivery_tracker.domain.order;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,28 +12,22 @@ public class OrderEvent{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore
     private Order order;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false)
-    private OrderStatus event_type;
+    private String eventType;
 
     @Column(name = "event_time", nullable = false)
     private LocalDateTime eventTime;
 
-    @Column(nullable = false)
-    private String eventType;
-
     @Column(length = 500)
     private String description;
-    
-
 
     public Long getId() {
-    return id;
+        return id;
     }
 
     public Order getOrder() {

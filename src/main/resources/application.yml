@@ -4,6 +4,8 @@ spring:
     username: system
     password: oracle
     driver-class-name: oracle.jdbc.OracleDriver
+  
+    baseline-version: 0
 
   rabbitmq:
     host: localhost
@@ -11,5 +13,13 @@ spring:
     username: user
     password: password
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
   cache:
     type: simple
+
+
+

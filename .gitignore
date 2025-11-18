@@ -54,6 +54,8 @@ Thumbs.db
 
 # Logs
 logs/
+run-with-log.ps1
+log.log
 *.out
 
 # Test outputs

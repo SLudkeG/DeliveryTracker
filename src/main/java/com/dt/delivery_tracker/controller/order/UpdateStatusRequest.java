@@ -6,3 +6,4 @@ public record UpdateStatusRequest(
         @NotBlank(message = "O novo status é obrigatório.")
         String newStatus
 ) {}
+ 

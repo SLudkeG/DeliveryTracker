@@ -1,5 +1,6 @@
 package com.dt.delivery_tracker;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +12,10 @@ class TestcontainersConfiguration {
 
 	@Bean
 	@ServiceConnection
-	OracleContainer oracleFreeContainer() {
-		return new OracleContainer(DockerImageName.parse("gvenzl/oracle-free:latest"));
+	OracleContainer oracleFreeContainer(@Value("${testcontainers.oracle.image:gvenzl/oracle-xe:21-slim}") String dockerImage) {
+		DockerImageName myImage = DockerImageName.parse(dockerImage)
+				.asCompatibleSubstituteFor("gvenzl/oracle-free");
+		return new OracleContainer(myImage);
 	}
 
 }

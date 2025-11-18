@@ -13,4 +13,4 @@ CREATE TABLE order_events (
     event_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     description VARCHAR2(500),
     CONSTRAINT fk_order FOREIGN KEY(order_id) REFERENCES orders(id)
-)
+);
