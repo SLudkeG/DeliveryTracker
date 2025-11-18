@@ -1,4 +1,4 @@
-package com.dt.delivery_tracker.domain;
+package com.dt.delivery_tracker.domain.order;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

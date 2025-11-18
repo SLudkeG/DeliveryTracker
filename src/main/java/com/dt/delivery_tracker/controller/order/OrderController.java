@@ -1,0 +1,59 @@
+package com.dt.delivery_tracker.controller.order;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.dt.delivery_tracker.domain.order.Order;
+import com.dt.delivery_tracker.domain.order.OrderService;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    private final OrderService service;
+
+    public OrderController(OrderService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public OrderResponse create(@RequestBody @Valid CreateOrderRequest request) {
+        Order order = service.createOrder(request.customerName());
+        return toResponse(order);
+    }
+
+    @PutMapping("/{id}/status")
+    public OrderResponse updateStatus(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateStatusRequest request) {
+
+        Order updated = service.updateStatus(id, request.newStatus());
+        return toResponse(updated);
+    }
+
+    @GetMapping("/{id}")
+    public OrderResponse findById(@PathVariable Long id) {
+        return toResponse(service.findById(id));
+    }
+
+    @GetMapping
+    public List<OrderResponse> list() {
+        return service.list()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    private OrderResponse toResponse(Order order) {
+        return new OrderResponse(
+                order.getId(),
+                order.getCustomerName(),
+                order.getStatus(),
+                order.getCreatedAt(),
+                order.getUpdatedAt()
+        );
+    }
+}

@@ -1,4 +1,4 @@
-package com.dt.delivery_tracker.domain;
+package com.dt.delivery_tracker.domain.order;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -27,14 +27,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEvent> events = new ArrayList<>();
 
-    // ======== Métodos de negócio ========
 
     public void addEvent(OrderEvent event) {
         event.setOrder(this);
         this.events.add(event);
     }
 
-    // ======== Getters e Setters ========
 
     public Long getId() {
         return id;
