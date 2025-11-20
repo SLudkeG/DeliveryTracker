@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.dt.delivery_tracker.domain.order.Order;
+import com.dt.delivery_tracker.domain.order.OrderEvent;
 import com.dt.delivery_tracker.domain.order.OrderService;
 import com.dt.delivery_tracker.domain.repository.OrderEventResponse;
 
@@ -58,6 +59,22 @@ public class OrderController {
                 .stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    @GetMapping("/events")
+    public List<OrderEventResponse> listAllEvents() {
+        return service.findAllEvents()
+                .stream()
+                .map(this::toEventResponse)
+                .toList();
+    }   
+
+    private OrderEventResponse toEventResponse(OrderEvent event) {
+        return new OrderEventResponse(
+                        event.getOrder().getId(),
+                        event.getEventType(),
+                        event.getEventTime(),
+                        event.getDescription());
     }
 
     private OrderResponse toResponse(Order order) {

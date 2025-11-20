@@ -11,6 +11,6 @@ public class OrderEventConsumer {
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE)
     public void receive(OrderEvent event) {
-        System.out.println("📥 Evento recebido: " + event);
+        System.out.println("Evento recebido: " + event);
     }
 }

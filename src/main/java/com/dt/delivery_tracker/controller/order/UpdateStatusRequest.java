@@ -1,9 +1,11 @@
 package com.dt.delivery_tracker.controller.order;
 
-import jakarta.validation.constraints.NotBlank;
+import com.dt.delivery_tracker.domain.order.OrderStatus;
+
+import jakarta.validation.constraints.NotNull;
 
 public record UpdateStatusRequest(
-        @NotBlank(message = "O novo status é obrigatório.")
-        String newStatus
+        @NotNull(message = "O novo status é obrigatório.")
+        OrderStatus newStatus
 ) {}
  

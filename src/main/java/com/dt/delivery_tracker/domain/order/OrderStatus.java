@@ -2,7 +2,9 @@ package com.dt.delivery_tracker.domain.order;
 
 public enum OrderStatus {
     CREATED,
-    IN_PROGRESS,
+    DISPATCHED,
+    IN_TRANSIT,
+    OUT_FOR_DELIVERY,
     DELIVERED,
-    CANCELED
+    CANCELLED
 }

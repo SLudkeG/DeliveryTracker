@@ -1,5 +1,6 @@
 package com.dt.delivery_tracker.domain.order;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import com.dt.delivery_tracker.domain.repository.OrderEventResponse;
 import com.dt.delivery_tracker.domain.repository.OrderRepository;
 import com.dt.delivery_tracker.messaging.OrderEventPublisher;
 import com.dt.delivery_tracker.exception.ResourceNotFoundException;
-
 
 @Service
 public class OrderService {
@@ -25,6 +25,11 @@ public class OrderService {
         this.publisher = publisher;
     }
 
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
+    }
+    
     /**
      * Cria um novo pedido e registra um evento associado.
      *
@@ -36,20 +41,24 @@ public class OrderService {
 
         Order order = new Order();
         order.setCustomerName(customerName);
-        order.setStatus("CREATED");
+        order.setStatus(OrderStatus.CREATED);
 
         Order saved = orderRepository.save(order);
 
         OrderEvent event = new OrderEvent();
         event.setOrder(saved);
         event.setEventType("ORDER_CREATED");
-        event.setEventTime(java.time.LocalDateTime.now());
+        event.setEventTime(LocalDateTime.now());
         event.setDescription("Pedido criado com sucesso.");
 
         eventRepository.save(event);
         publisher.publish(event);
 
         return saved;
+    }
+
+    public List<OrderEvent> findAllEvents() {
+        return eventRepository.findAllByOrderByEventTimeAsc();
     }
 
     public List<OrderEventResponse> getOrderEvents(Long orderId) {
@@ -71,18 +80,13 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public Order findById(Long orderId) {
-        return orderRepository.findById(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
-    }
-
-
     @Transactional
     public void delete(Long id) {
         Order order = findById(id);
 
         orderRepository.delete(order);
     }
+
     /**
      * Atualiza o status do pedido e registra isso no histórico.
      *
@@ -90,26 +94,28 @@ public class OrderService {
      * @param newStatus Novo status (ex: IN_TRANSIT, DELIVERED)
      */
     @Transactional
-    public Order updateStatus(Long orderId, String newStatus) {
-
+    public Order updateStatus(Long orderId, OrderStatus newStatus) {
+        
         Order order = findById(orderId);
 
         order.setStatus(newStatus);
-        order.setUpdatedAt(java.time.LocalDateTime.now());
+        order.setUpdatedAt(LocalDateTime.now());
 
         Order updated = orderRepository.save(order);
 
-        OrderEvent event = new OrderEvent();
-        event.setOrder(updated);
-        event.setEventType("STATUS_CHANGED");
-        event.setEventTime(java.time.LocalDateTime.now());
-        event.setDescription("Status atualizado para: " + newStatus);
-
+        OrderEvent event = createEvent(updated, "STATUS_CHANGED", "Status atualizado para: " + newStatus);
         eventRepository.save(event);
         publisher.publish(event);
 
         return updated;
     }
 
-    
+        private OrderEvent createEvent(Order order, String eventType, String description) {
+        OrderEvent event = new OrderEvent();
+        event.setOrder(order);
+        event.setEventType(eventType);
+        event.setEventTime(LocalDateTime.now());
+        event.setDescription(description);
+        return event;
+    }
 }

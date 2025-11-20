@@ -1,8 +1,8 @@
 package com.dt.delivery_tracker.controller.order;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record CreateOrderRequest(
-        @NotBlank(message = "O nome do cliente é obrigatorio")
+        @NotNull(message = "O nome do cliente é obrigatorio")
         String customerName
         ){}
 

@@ -16,8 +16,8 @@ public class Order {
     @Column(nullable = false)
     private String customerName;
 
-    @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -27,12 +27,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEvent> events = new ArrayList<>();
 
-
     public void addEvent(OrderEvent event) {
-        event.setOrder(this);
-        this.events.add(event);
+        if (event != null) {
+            event.setOrder(this);
+            this.events.add(event);
+        }
     }
-
 
     public Long getId() {
         return id;
@@ -46,11 +46,11 @@ public class Order {
         this.customerName = customerName;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
